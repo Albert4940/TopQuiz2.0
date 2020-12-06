@@ -1,4 +1,4 @@
-package com.example.topquiz20;
+package com.example.topquiz20.controller;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -11,17 +11,22 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import com.example.topquiz20.model.User;
+
 public class MainActivity extends AppCompatActivity {
     private TextView mGreetingText;
     private EditText mNameInput;
     private Button mPlay;
+    private User mUser;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
-        mGreetingText = (TextView)findViewById(R.id.greeting);
-        mNameInput = (EditText)findViewById(R.id.input);
-        mPlay = (Button)findViewById(R.id.mbutton);
+        setContentView(com.example.topquiz20.R.layout.activity_main);
+        mUser = new User();
+        mGreetingText = (TextView)findViewById(com.example.topquiz20.R.id.greeting);
+        mNameInput = (EditText)findViewById(com.example.topquiz20.R.id.input);
+        mPlay = (Button)findViewById(com.example.topquiz20.R.id.mbutton);
+
         mPlay.setEnabled(false);
         mNameInput.addTextChangedListener(new TextWatcher() {
             @Override
@@ -43,6 +48,8 @@ public class MainActivity extends AppCompatActivity {
         mPlay.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                String mfirstname = mNameInput.getText().toString();
+                mUser.setFirstName(mfirstname);
                 Intent gameActivity = new Intent(MainActivity.this,GameActivity.class);
                 startActivity(gameActivity);
             }
