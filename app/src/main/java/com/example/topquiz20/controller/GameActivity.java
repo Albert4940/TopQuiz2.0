@@ -4,6 +4,7 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -24,6 +25,7 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
     private Button btn4;
     private QuestionBank mQuestionBank;
     private Question mCurrentQuestion;
+    public static final String BUNDLE_EXTRA_SCORE = "BUNDLE_EXTRA_SCORE";
 
     private int mNumberOfQuestions;
     private int mScore;
@@ -88,6 +90,9 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
         builder.setTitle("Well done!").setMessage("Your Score is "+ mScore).setPositiveButton("OK", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
+                Intent intent = new Intent();
+                intent.putExtra(BUNDLE_EXTRA_SCORE,mScore);
+                setResult(RESULT_OK,intent);
                 finish();
             }
         }).create().show();
