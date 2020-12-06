@@ -1,7 +1,9 @@
 package com.example.topquiz20.controller;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -23,11 +25,14 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
     private QuestionBank mQuestionBank;
     private Question mCurrentQuestion;
 
+    private int mNumberOfQuestions;
+    private int mScore;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(com.example.topquiz20.R.layout.activity_game);
-
+        mNumberOfQuestions = 4;
+        mScore = 0;
         mQuestionBank = this.generateQuestions();
         txQuestion = (TextView)findViewById(R.id.activity_question_text);
         btn1 = (Button)findViewById(R.id.activity_answer1_btn);
@@ -65,10 +70,27 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
         int responseIndex = (int)v.getTag();
 
         if(responseIndex == mCurrentQuestion.getAnswerIndex()){
+            mScore++;
             Toast.makeText(this, "Correct !", Toast.LENGTH_SHORT).show();
         }else{
             Toast.makeText(this, "Wrong Answer !", Toast.LENGTH_SHORT).show();
         }
+
+        if(--mNumberOfQuestions == 0){
+           endGame();
+        }else{
+            mCurrentQuestion = mQuestionBank.getQuestion();
+            displayQuestion(mCurrentQuestion);
+        }
+    }
+    private void endGame(){
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("Well done!").setMessage("Your Score is "+ mScore).setPositiveButton("OK", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                finish();
+            }
+        }).create().show();
     }
 
     private QuestionBank generateQuestions() {
