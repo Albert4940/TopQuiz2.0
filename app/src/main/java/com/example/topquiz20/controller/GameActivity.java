@@ -6,6 +6,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
@@ -26,6 +28,7 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
     private QuestionBank mQuestionBank;
     private Question mCurrentQuestion;
     public static final String BUNDLE_EXTRA_SCORE = "BUNDLE_EXTRA_SCORE";
+    private boolean mEnableTouchEvents;
 
     private int mNumberOfQuestions;
     private int mScore;
@@ -35,6 +38,7 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
         setContentView(com.example.topquiz20.R.layout.activity_game);
         mNumberOfQuestions = 4;
         mScore = 0;
+        mEnableTouchEvents = true;
         mQuestionBank = this.generateQuestions();
         txQuestion = (TextView)findViewById(R.id.activity_question_text);
         btn1 = (Button)findViewById(R.id.activity_answer1_btn);
@@ -78,13 +82,26 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
             Toast.makeText(this, "Wrong Answer !", Toast.LENGTH_SHORT).show();
         }
 
-        if(--mNumberOfQuestions == 0){
-           endGame();
-        }else{
-            mCurrentQuestion = mQuestionBank.getQuestion();
-            displayQuestion(mCurrentQuestion);
-        }
+        mEnableTouchEvents = false;
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                mEnableTouchEvents = true;
+                if(--mNumberOfQuestions == 0){
+                    endGame();
+                }else{
+                    mCurrentQuestion = mQuestionBank.getQuestion();
+                    displayQuestion(mCurrentQuestion);
+                }
+            }
+        },2000);
     }
+
+    @Override
+    public boolean dispatchTouchEvent(MotionEvent ev) {
+        return mEnableTouchEvents && super.dispatchTouchEvent(ev);
+    }
+
     private void endGame(){
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle("Well done!").setMessage("Your Score is "+ mScore).setPositiveButton("OK", new DialogInterface.OnClickListener() {

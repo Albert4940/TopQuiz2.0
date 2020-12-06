@@ -28,6 +28,7 @@ public class MainActivity extends AppCompatActivity {
     private int mPrefScore;
 
 
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
