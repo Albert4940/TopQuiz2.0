@@ -5,15 +5,16 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
+    android:layout_margin="10dp"
     tools:context="com.example.topquiz20.controller.MainActivity">
 
     <TextView
         android:id="@+id/greeting"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Hello World!"
+        android:text="Hello !"
         android:layout_marginTop="20dp"
-        android:gravity="center"
+        android:gravity="left"
         />
     <EditText
         android:id="@+id/input"

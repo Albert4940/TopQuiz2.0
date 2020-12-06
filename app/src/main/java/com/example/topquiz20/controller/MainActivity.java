@@ -4,6 +4,7 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -20,12 +21,19 @@ public class MainActivity extends AppCompatActivity {
     private Button mPlay;
     private User mUser;
     private static final int GAME_ACTIVITY_REQUEST_CODE = 42;
+    private static final String PREF_KEY_FIRSTNAME = "firstname";
+    private static final String PREF_KEY_SCORE = "score";
+    private SharedPreferences mPreferences;
+    private String mPrefFirstName;
+    private int mPrefScore;
+
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (GAME_ACTIVITY_REQUEST_CODE == requestCode && resultCode == RESULT_OK) {
             int score = data.getIntExtra(GameActivity.BUNDLE_EXTRA_SCORE, 0);
+            mPreferences.edit().putInt(PREF_KEY_SCORE,score).apply();
         }
     }
 
@@ -34,9 +42,19 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(com.example.topquiz20.R.layout.activity_main);
         mUser = new User();
+
+        mPreferences = getPreferences(MODE_PRIVATE);
+
         mGreetingText = (TextView)findViewById(com.example.topquiz20.R.id.greeting);
         mNameInput = (EditText)findViewById(com.example.topquiz20.R.id.input);
         mPlay = (Button)findViewById(com.example.topquiz20.R.id.mbutton);
+
+        mPrefFirstName = mPreferences.getString(PREF_KEY_FIRSTNAME, null);
+        mPrefScore = mPreferences.getInt(PREF_KEY_SCORE,0);
+
+        if(mPrefFirstName != null){
+            mGreetingText.setText("Welcom back, "+mPrefFirstName+"!\nYour last score was "+mPrefScore+", will you do better this time?");
+        }
 
         mPlay.setEnabled(false);
         mNameInput.addTextChangedListener(new TextWatcher() {
@@ -61,6 +79,9 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View v) {
                 String mfirstname = mNameInput.getText().toString();
                 mUser.setFirstName(mfirstname);
+                SharedPreferences.Editor editor = mPreferences.edit();
+                editor.putString(PREF_KEY_FIRSTNAME,mUser.getFirstName());
+                editor.apply();
                 Intent gameActivity = new Intent(MainActivity.this,GameActivity.class);
                 startActivityForResult(gameActivity,GAME_ACTIVITY_REQUEST_CODE);
             }
